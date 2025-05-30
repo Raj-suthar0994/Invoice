@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Invoice Form</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #dbeafe, #f0f9ff);
+    margin: 0 auto;
+    padding: 40px 20px;
+    max-width: 1000px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th {
+    background-color: #1e3a8a;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  td input, td textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+
+  #name {
+    font-size: 36px;
+    background-color: #f29f04;
+    color: white;
+    text-align: center;
+    padding: 25px 10px;
+    font-weight: bold;
+    font-family: 'Georgia', serif;
+    letter-spacing: 2px;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  #btn {
+    font-family: 'Segoe UI', Tahoma;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin: 10px 5px 0 0;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  #btn:hover {
+    background-color: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  }
+
+  #bill td, #bill th {
+    background-color: #e0e7ff;
+    font-weight: 500;
+  }
+
+  input[readonly], textarea[readonly] {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button {
+    opacity: 1;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  p {
+    margin: 0;
+  }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #main, #main * {
+    visibility: visible;
+  }
+
+  #main {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  button,
+  form > *:not(#main) {
+    display: none !important;
+  }
+
+  textarea,
+  input {
+    border: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    font-size: 14px;
+  }
+
+  input[readonly],
+  textarea[readonly] {
+    color: black;
+  }
+
+  /* Remove number input arrows */
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+   textarea {
+    resize: none !important;
+    overflow: hidden !important;
+  }
+}
+
+
+
+</style>
+</head>
+<body>
+
+<form>
+  <table id="main" style="background-color: whitesmoke;">
+    <tr id="name">
+      <td colspan="5" style="text-align: center; padding: 20px;"><strong>ANANT INTERIOR</strong></td>
+    </tr>
+    <tr id="bill">
+      <td colspan="2" style="padding-left: 2px; background-color: gray;"><p>Bill NO.</p></td>
+      <td colspan="5" style="background-color: gray;"><input type="number" style="width: 190px; height: 20px; margin-left: 2%;margin-top: 0px; margin-bottom: 0px;"></td>
+    </tr>
+    <tr>
+      <td colspan="2"><textarea placeholder="From Address" rows="10" cols="20" style="font-size: 15px;"></textarea></td>
+      <td colspan="3"><textarea placeholder="To Address" rows="10" cols="20" style="font-size: 15px;"></textarea></td>
+    </tr>
+    <tr>
+      <td colspan="5" style="background-color: gray;"><p style="font-family: serif; font-size: 18px;">Site Address:</p></td>
+    </tr>
+    <tr>
+      <td colspan="5" style="padding: 0px; padding-left: 5px; padding-right: 5px;"><input type="text"></td>
+    </tr>
+    <tr>
+      <td colspan="5" style="padding: 0px; padding-left: 5px; padding-right: 5px;"><input type="text"></td>
+    </tr>
+    <tr>
+      <td colspan="5" style="padding: 0px; padding-left: 5px; padding-right: 5px;"><input type="text"></td>
+    </tr>
+    <tr id="bill">
+      <th style="width: 5%; font-size: medium; padding-left: 2px; font-family: serif; height: 40px; background-color: gray; text-align: center;">No</th>
+      <th style="width: 55%;font-size: medium; padding-left: 2px; font-family: serif; background-color: gray;  text-align: center;">Description</th>
+      <th style="width: 13%;font-size: medium; padding-left: 2px; font-family: serif; background-color: gray;  text-align: center;">Quantity</th>
+      <th style="width: 13%; font-size: medium; padding-left: 2px; font-family: serif; background-color: gray;  text-align: center;">Rate</th>
+      <th style="width: 14%; background-color: gray;">Amount</th>
+    </tr>
+    <tbody id="invoice-body">
+      <tr>
+        <td style="height: 40px; font-size: medium;"><input type="number" placeholder="Sr." style="height: 100%; font-size: 15px; width: 100px;"></td>
+        <td style="height: 40px; font-size: medium;"><textarea placeholder="Description" style="height: 60px; font-size: 15px;"></textarea></td>
+        <td style="height: 40px; font-size: medium;"><input type="text" class="quantity" style="height: 60px" placeholder="Quantity" oninput="calculateAmount(this)"></td>
+        <td style="height: 40px; font-size: medium;"><input type="text" class="rate" style="height: 60px" placeholder="Rate" oninput="calculateAmount(this)"></td>
+        <td style="height: 40px; font-size: medium;"><input type="number" class="amount" style="height: 60px" placeholder="Amount" readonly></td>
+      </tr>
+    </tbody>
+    <tr>
+      <td colspan="3" rowspan="7">
+        <textarea placeholder="Additional Notes or Terms" rows="13" style="height: 100%; width: 100%; resize: vertical; font-size: 20px;"></textarea>
+      </td>
+      <td style="background-color: gray;">Total Amount</td>
+      <td><input type="number" id="total-amount" readonly></td>
+    </tr>
+    <tr>
+      <td style="background-color: gray;">Transportation cost</td>
+      <td><input type="number" id="transportation-cost" oninput="updateTotals()"></td>
+    </tr>
+    <tr>
+      <td style="background-color: gray;">Total Amount [A]</td>
+      <td><input type="number" id="total-a" readonly></td>
+    </tr>
+    <tr>
+      <td style="background-color: gray;">CGST 9.00%</td>
+      <td><input type="number" id="cgst" readonly></td>
+    </tr>
+    <tr>
+      <td style="background-color: gray;">SGST 9.00%</td>
+      <td><input type="number" id="sgst" readonly></td>
+    </tr>
+    <tr>
+      <td style="background-color: gray;">Total Amount [B]</td>
+      <td><input type="number" id="total-b" readonly></td>
+    </tr>
+    <tr>
+      <td style="background-color: gray;">GRAND TOTAL [A] + [B]</td>
+      <td><input type="number" id="grand-total" readonly></td>
+    </tr>
+    <tr>
+      <td colspan="5" style="padding-left: 1%; background-color: gray; font-family: serif;"><p>Amount In words</p></td>
+    </tr>
+    <tr>
+      <td colspan="5" style="padding: 0px;"><input type="text" id="amount-in-words" style="height: 50px; font-family: serif; font-size: 20px;" readonly></td>
+    </tr>
+    <tr>
+      <td colspan="5"><p style="text-align: right; padding-right: 20px; font-size: 20px;">FOR: ANANT INTERIOR</p></td>
+    </tr>
+    <tr>
+      <td colspan="5"><p style="text-align: right; padding-right: 20px; font-size: 20px;">JETHARAM SUTHAR</p></td>
+    </tr>
+  </table>
+
+  <button type="button" onclick="addNewRow()" id="btn">Add New Row</button>
+  <button type="button" onclick="deleteLastRow()" id="btn">Delete Row</button>
+  <button type="button" onclick="window.print()" id="btn">Print / Save PDF</button>
+  <button type="button" onclick="exportToExcel()" id="btn">Export to Excel</button>
+</form>
+
+<script>
+function calculateAmount(element) {
+  const row = element.closest('tr');
+  let quantity = row.querySelector('.quantity');
+  let rate = row.querySelector('.rate');
+  let amountField = row.querySelector('.amount');
+
+  // Clean input to allow only numbers and dots
+  quantity.value = quantity.value.replace(/[^\d.]/g, '');
+  // Removed appending of " SFT"
+
+  rate.value = rate.value.replace(/[^\d.]/g, '');
+  if (rate.value && !rate.value.includes('/-')) rate.value += ' /-';
+
+  const quantityVal = parseFloat(quantity.value) || 0;
+  const rateVal = parseFloat(rate.value) || 0;
+  const amount = quantityVal * rateVal;
+  amountField.value = amount.toFixed(2);
+
+  updateTotals();
+}
+
+function updateTotals() {
+  const amountFields = document.querySelectorAll('.amount');
+  let total = 0;
+  amountFields.forEach(el => total += parseFloat(el.value) || 0);
+
+  const transportCost = parseFloat(document.getElementById('transportation-cost').value) || 0;
+
+  const totalA = total + transportCost;
+
+  document.getElementById('total-amount').value = total.toFixed(2);
+  document.getElementById('total-a').value = totalA.toFixed(2);
+
+  const cgst = totalA * 0.09;
+  const sgst = totalA * 0.09;
+
+  document.getElementById('cgst').value = cgst.toFixed(2);
+  document.getElementById('sgst').value = sgst.toFixed(2);
+
+  const totalB = cgst + sgst;
+  document.getElementById('total-b').value = totalB.toFixed(2);
+
+  const grandTotal = totalA + totalB;
+  const roundedGrandTotal = Math.round(grandTotal);
+
+  document.getElementById('grand-total').value = roundedGrandTotal;
+  document.getElementById('amount-in-words').value = convertToWords(roundedGrandTotal);
+}
+
+function convertToWords(amount) {
+  const a = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+  const b = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+  if (amount === 0) return "Zero Rupees Only";
+  if (amount > 9999999) return "Amount too large";
+
+  function numToWords(num) {
+    if (num < 20) return a[num];
+    if (num < 100) return b[Math.floor(num / 10)] + (num % 10 ? " " + a[num % 10] : "");
+    if (num < 1000) return a[Math.floor(num / 100)] + " Hundred" + (num % 100 ? " and " + numToWords(num % 100) : "");
+    if (num < 100000) return numToWords(Math.floor(num / 1000)) + " Thousand" + (num % 1000 ? " " + numToWords(num % 1000) : "");
+    return numToWords(Math.floor(num / 100000)) + " Lakh" + (num % 100000 ? " " + numToWords(num % 100000) : "");
+  }
+
+  return numToWords(amount) + " Rupees Only";
+}
+
+function addNewRow() {
+  const tbody = document.getElementById('invoice-body');
+  const newRow = document.createElement('tr');
+  newRow.innerHTML = `
+    <td style="height: 40px; font-size: medium;"><input type="number" placeholder="Sr." style="height: 100%; font-size: 15px;"></td>
+        <td style="height: 40px; font-size: medium;"><textarea placeholder="Description" style="height: 60px; font-size: 15px;"></textarea></td>
+        <td style="height: 40px; font-size: medium;"><input type="text" class="quantity" style="height: 60px" placeholder="Quantity" oninput="calculateAmount(this)"></td>
+        <td style="height: 40px; font-size: medium;"><input type="text" class="rate" style="height: 60px" placeholder="Rate" oninput="calculateAmount(this)"></td>
+        <td style="height: 40px; font-size: medium;"><input type="number" class="amount" style="height: 60px" placeholder="Amount" readonly></td>
+  `;
+  tbody.appendChild(newRow);
+}
+
+function exportToExcel() {
+  const table = document.getElementById("main");
+  const clone = table.cloneNode(true);
+
+  // Replace inputs and textareas with their values
+  const inputs = clone.querySelectorAll('input, textarea');
+  inputs.forEach(input => {
+    const value = input.value;
+    const cell = input.parentElement;
+    cell.textContent = value;
+  });
+
+  // Apply borders via inline styles (for Excel)
+  clone.querySelectorAll("td, th").forEach(cell => {
+    cell.style.border = "1px solid black";
+    cell.style.padding = "5px";
+  });
+
+  // Use sheetjs to convert and export
+  const wb = XLSX.utils.table_to_book(clone, {
+    sheet: "Invoice",
+  });
+
+  // Optional: Define column widths if needed
+  const ws = wb.Sheets["Invoice"];
+  ws["!cols"] = [
+    { wpx: 40 },  // No
+    { wpx: 300 }, // Description
+    { wpx: 100 }, // Quantity
+    { wpx: 100 }, // Rate
+    { wpx: 100 }, // Amount
+  ];
+
+  XLSX.writeFile(wb, "invoice.xlsx");
+}
+function deleteLastRow() {
+  const tbody = document.getElementById('invoice-body');
+  const rowCount = tbody.rows.length;
+
+  if (rowCount > 1) { // Keep at least one row
+    tbody.deleteRow(rowCount - 1);
+  } else {
+    alert("At least one row must remain in the invoice.");
+  }
+}
+
+
+</script>
+</body>
+</html>
+
